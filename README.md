@@ -57,6 +57,7 @@ The basic HTML structure is like this:
 
 It is possible to nest sections:
 
+```html
 <div class='wrapper'>
   <div class='section'>
   	<div class='c lg-s6'></div>
@@ -69,6 +70,7 @@ It is possible to nest sections:
   	</div>
   </div>
 </div>
+```
 
 ## Helper classes
 
