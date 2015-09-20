@@ -1,0 +1,27 @@
+{
+  "name": "supergrid",
+  "version": "0.0.1",
+  "description": "CLI-based SCSS grid generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaz303/supergrid.git"
+  },
+  "keywords": [
+    "scss",
+    "css",
+    "grid",
+    "generator",
+    "responsive",
+    "cli"
+  ],
+  "author": "Jason Frame <jason@onehackoranother.com> (http://jasonframe.co.uk)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaz303/supergrid/issues"
+  },
+  "homepage": "https://github.com/jaz303/supergrid#readme"
+}
