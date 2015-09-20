@@ -32,6 +32,8 @@ module.exports = function generator(config) {
 		if (staticBreakpoint[0]) {
 			write("$mq-static-breakpoint: " + staticBreakpoint[0].name + ";");
 		}
+
+		write("");
 	}
 
 	function _mediaQuery(bp) {
@@ -79,7 +81,6 @@ module.exports = function generator(config) {
 		write("    .no-" + bp.name + " { display: none !important; }");
 		write("}");
 		write("");
-
 	});
 
 	// Generate grid for each breakpoint
