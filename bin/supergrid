@@ -36,6 +36,7 @@ function _parseArgs(args) {
 	args.forEach(function(arg) {
 		switch (arg) {
 			case '--json': generate = 'json'; break;
+			case '--scss': generate = 'scss'; break;
 			case '--mq': config.mq = true; break;
 			case '--no-mq': config.mq = false; break;
 			case '--border': config.spacingMode = 'border'; break;
