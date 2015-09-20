@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+
+var sg = require('supergrid');
+var args = process.argv.slice(2);
+
+var opts;
+if (args.length === 0) {
+	opts = {
+		generate: 'scss',
+		config: _readConfigFile('grid.json')
+	};
+} else if (args.length === 1) {
+	opts = {
+		generate: 'scss',
+		config: _readConfigFile(args[0])
+	};
+} else {
+	opts = _parseArgs(args);
+}
+
+if (opts.generate === 'json') {
+	process.stdout.write(JSON.stringify(opts.config, null, 4) + "\n");
+} else {
+	process.stdout.write(sg(opts.config));
+}
+
+function _readConfigFile(path) {
+	return JSON.parse(require('fs').readFileSync(path, 'utf8'));
+}
+
+function _parseArgs(args) {
+	var generate = 'scss';
+	var config = { breakpoints: [] };
+	var breakpoints = config.breakpoints;
+	var bp = null;
+	args.forEach(function(arg) {
+		switch (arg) {
+			case '--json': generate = 'json'; break;
+			case '--mq': config.mq = true; break;
+			case '--no-mq': config.mq = false; break;
+			case '--border': config.spacingMode = 'border'; break;
+			case '--padding': config.spacingMode = 'padding'; break;
+			case '--clearfix': config.defineClearfix = true; break;
+			case '--no-clearfix': config.defineClearfix = false; break;
+			default:
+				// breakpoint 0 - name:className:columns
+				if (arg.match(/^([a-z_-]+):([a-z_-]+):(\d+)$/i)) {
+					if (breakpoints.length > 0) {
+						throw new Error("breakpoint requires width");
+					}
+					bp = {
+						name: RegExp.$1,
+						className: RegExp.$2,
+						columns: parseInt(RegExp.$3, 10),
+						spacing: 0
+					};
+					breakpoints.push(bp);
+				// breakpoint 1+ - startWidth:name:className:columns
+				} else if (arg.match(/^(\d+):([a-z_-]+):([a-z_-]+):(\d+)$/i)) {
+					if (breakpoints.length === 0) {
+						throw new Error("first breakpoint cannot have a width");
+					}
+					bp = {
+						startWidth: parseInt(RegExp.$1, 10),
+						name: RegExp.$2,
+						className: RegExp.$3,
+						columns: parseInt(RegExp.$4, 10),
+						spacing: 0
+					};
+					breakpoints.push(bp);
+				// option
+				} else if (arg.match(/^(minWidth|maxWidth|gutter|spacing):(\d+)$/)) {
+					if (!bp) {
+						throw new Error("can't set attribute: no current breakpoint");
+					}
+					bp[RegExp.$1] = parseInt(RegExp.$2, 10);
+				} else {
+					throw new Error("invalid argument: " + arg);
+				}
+		}
+	});
+	return {
+		generate: generate,
+		config: config
+	};
+}

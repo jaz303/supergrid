@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "supergrid": "./bin/supergrid"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jaz303/supergrid.git"
