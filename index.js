@@ -89,7 +89,7 @@ module.exports = function generator(config) {
 		var cn = bp.className;
 		var spacing = bp.spacing;
 		var halfSpacing = spacing / 2;
-		var gutter = ('gutter' in bp) ? (bp.gutter) : (spacing / 2);
+		var gutter = ('gutter' in bp) ? (bp.gutter) : spacing;
 
 		//
 		// generate mixins
