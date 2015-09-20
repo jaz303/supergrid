@@ -25,3 +25,19 @@ Generate three sizes with breakpoints at 480px and 760px. Small and medium sizes
 		small:sm:12 spacing:20 \
 		480:medium:md:12 spacing:20 \
 		760:large:lg:24 spacing:20 maxWidth:1100
+
+## Using the generate CSS
+
+```html
+<div class='wrapper'>
+  <div class='section'>
+  	<div class='c sm-s12 tb-s6 lg-s4'></div>
+  	<div class='c sm-s12 tb-s6 lg-s4'></div>
+    <div class='c sm-s12 tb-s6 lg-s4'></div>
+  </div>
+</div>
+```
+
+## TODO
+
+  * Allow customisable classnames for `.wrapper`, `.section`, `.c`.
