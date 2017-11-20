@@ -50,6 +50,7 @@ function _parseArgs(args) {
 						throw new Error("breakpoint requires width");
 					}
 					bp = {
+						startWidth: 0,
 						name: RegExp.$1,
 						className: RegExp.$2,
 						columns: parseInt(RegExp.$3, 10),

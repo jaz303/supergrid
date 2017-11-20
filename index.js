@@ -7,7 +7,7 @@ module.exports = function generator(config) {
 
     var css = "";
 
-    if (defineClearfix !== false) {
+    if (defineClearfix) {
         write("@mixin clearfix {");
         write("    &:after {");
         write("        content: ' ';");
@@ -34,25 +34,46 @@ module.exports = function generator(config) {
         write("");
     }
 
-    function _mediaQuery(bp) {
+    function _breakpointQuery(from, until) {
         if (breakpoints.length === 1) {
             return "@media all";
-        } else if (useMq) {
-            if (bp === 0) {
-                return "@include mq($until: " + breakpoints[bp+1].name + ")";
-            } else if (bp === breakpoints.length - 1) {
-                return "@include mq($from: " + breakpoints[bp].name + ")";
-            } else {
-                return "@include mq($from: " + breakpoints[bp].name + ", $until: " + breakpoints[bp+1].name + ")";
+        }
+        if (useMq) {
+            if (typeof from === 'number' && typeof until === 'number') {
+                return "@inlude mq($from: " + breakpoints[from].name + ", $until: " + breakpoints[until].name + ")";
+            } else if (typeof from === 'number') {
+                return "@inlude mq($from: " + breakpoints[from].name + ")";
+            } else if (typeof until === 'number') {
+                return "@inlude mq($until: " + breakpoints[until].name + ")";
             }
         } else {
-            if (bp === 0) {
-                return "@media all and (max-width: " + (breakpoints[bp+1].startWidth - 1) + "px)";
-            } else if (bp === breakpoints.length - 1) {
-                return "@media all and (min-width: " + breakpoints[bp].startWidth + "px)";
-            } else {
-                return "@media all and (min-width: " + breakpoints[bp].startWidth + "px) and (max-width: " + (breakpoints[bp+1].startWidth + 1) + "px)";
+            if (typeof from === 'number' && typeof until === 'number') {
+                return "@media all and (min-width: " + breakpoints[from].startWidth + "px) and (max-width: " + (breakpoints[until].startWidth - 1) + "px)";
+            } else if (typeof from === 'number') {
+                return "@media all and (min-width: " + breakpoints[from].startWidth + "px)";
+            } else if (typeof until === 'number') {
+                return "@media all and (max-width: " + (breakpoints[until].startWidth - 1) + "px)";
             }
+        }
+    }
+
+    function _mediaQuery(bp, type) {
+        type = type || 'only';
+        switch (type) {
+            case 'only':
+                if (bp === 0) {
+                    return _breakpointQuery(null, bp + 1);
+                } else if (bp === breakpoints.length - 1) {
+                    return _breakpointQuery(bp, null);
+                } else {
+                    return _breakpointQuery(bp, bp + 1);
+                }
+            case 'from':
+                return _breakpointQuery(bp, null);
+            case 'until':
+                return _breakpointQuery(null, bp);
+            default:
+                throw new Error("invalid media query type: " + type);
         }
     }
 
@@ -61,8 +82,13 @@ module.exports = function generator(config) {
     // Generate mixins for helping with breakpoint media queries
 
     breakpoints.forEach(function(bp, ix) {
+        write("@mixin from-" + bp.name + "() {");
+        write("    " + _mediaQuery(ix, 'from') + " { @content }");
+        write("}");
+        write("");
+
         write("@mixin " + bp.name + "-only() {");
-        write("    " + _mediaQuery(ix) + " { @content }");
+        write("    " + _mediaQuery(ix, 'only') + " { @content }");
         write("}");
         write("");
     });
@@ -162,7 +188,7 @@ module.exports = function generator(config) {
         // That's all of the helper mixins generated;
         // now lets's to do the non-semantic stuff.
 
-        write("@include " + bp.name + "-only {");
+        write("@include from-" + bp.name + " {");
         write("    .wrapper { @include " + cn + "-wrapper--x; }");
         write("    .section { @include " + cn + "-section--x; }");
         write("    .c { @include " + cn + "-c--x; }");
@@ -184,7 +210,7 @@ module.exports = function generator(config) {
 
             for (var i = 1; i <= bp.columns; ++i) {
                 write("@mixin " + cn + "-s" + i + " {");
-                write("    @include " + bp.name + "-only {");
+                write("    @include from-" + bp.name + " {");
                 write("        @include " + cn + "-c--x;");
                 write("        @include " + cn + "-s" + i + "--x;");
                 write("    }");
@@ -194,7 +220,7 @@ module.exports = function generator(config) {
 
             for (var i = 1; i <= bp.columns; ++i) {
                 write("@mixin " + cn + "-p" + i + " {");
-                write("    @include " + bp.name + "-only {");
+                write("    @include from-" + bp.name + " {");
                 write("        @include " + cn + "-p" + i + "--x;");
                 write("    }");
                 write("}");
