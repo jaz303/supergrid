@@ -40,11 +40,11 @@ module.exports = function generator(config) {
         }
         if (useMq) {
             if (typeof from === 'number' && typeof until === 'number') {
-                return "@inlude mq($from: " + breakpoints[from].name + ", $until: " + breakpoints[until].name + ")";
+                return "@include mq($from: " + breakpoints[from].name + ", $until: " + breakpoints[until].name + ")";
             } else if (typeof from === 'number') {
-                return "@inlude mq($from: " + breakpoints[from].name + ")";
+                return "@include mq($from: " + breakpoints[from].name + ")";
             } else if (typeof until === 'number') {
-                return "@inlude mq($until: " + breakpoints[until].name + ")";
+                return "@include mq($until: " + breakpoints[until].name + ")";
             }
         } else {
             if (typeof from === 'number' && typeof until === 'number') {
