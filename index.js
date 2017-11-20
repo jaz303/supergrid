@@ -82,19 +82,13 @@ module.exports = function generator(config) {
     // Generate mixins for helping with breakpoint media queries
 
     breakpoints.forEach(function(bp, ix) {
-        if (ix < bp.length - 1) {
-            write("@mixin until-" + bp.name + "() {" + _mediaQuery(ix, 'until') + " { @content } }");
-        } else {
-            write("@mixin until-" + bp.name + "() { @content }");
-        }
-        
         if (ix > 0) {
-            write("@mixin from-" + bp.name + "() {" + _mediaQuery(ix, 'from') + " { @content } }");
+            write("@mixin from-" + bp.name + "() { " + _mediaQuery(ix, 'from') + " { @content } }");
         } else {
             write("@mixin from-" + bp.name + "() { @content }");
         }
         
-        write("@mixin " + bp.name + "-only() {" + _mediaQuery(ix, 'only') + " { @content } }");
+        write("@mixin " + bp.name + "-only() { " + _mediaQuery(ix, 'only') + " { @content } }");
     });
 
     // Generate on/off classes: .phone-only, .no-phone
