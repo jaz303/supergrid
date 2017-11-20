@@ -82,16 +82,20 @@ module.exports = function generator(config) {
     // Generate mixins for helping with breakpoint media queries
 
     breakpoints.forEach(function(bp, ix) {
-        write("@mixin until-" + bp.name + "() {");
-        write("    " + _mediaQuery(ix, 'until') + " { @content }");
-        write("}");
-        write("");
+        if (ix < bp.length - 1) {
+            write("@mixin until-" + bp.name + "() {");
+            write("    " + _mediaQuery(ix, 'until') + " { @content }");
+            write("}");
+            write("");    
+        }
         
-        write("@mixin from-" + bp.name + "() {");
-        write("    " + _mediaQuery(ix, 'from') + " { @content }");
-        write("}");
-        write("");
-
+        if (ix > 0) {
+            write("@mixin from-" + bp.name + "() {");
+            write("    " + _mediaQuery(ix, 'from') + " { @content }");
+            write("}");
+            write("");    
+        }
+        
         write("@mixin " + bp.name + "-only() {");
         write("    " + _mediaQuery(ix, 'only') + " { @content }");
         write("}");
